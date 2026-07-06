@@ -15,7 +15,8 @@ let currentStep = 0;
 // Check if already logged in
 const savedMobile = localStorage.getItem("rg_mobile");
 const savedName = localStorage.getItem("rg_name");
-if (savedMobile && savedName && auth.currentUser) {
+// BYPASS FIREBASE AUTH GUARD FOR TESTING
+if (savedMobile && savedName) {
   window.location.href = "app.html";
 }
 
