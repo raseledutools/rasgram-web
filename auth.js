@@ -62,23 +62,43 @@ async function sendOtpToServer() {
   const code = document.getElementById("country-code").value;
   const phone = document.getElementById("phone-input").value.trim();
   const fullPhone = code + phone;
+  const mobile = fullPhone.replace("+", "").replace(/\s/g, "");
 
   setLoading("send-otp-text", "send-otp-loader", true);
 
+  // BYPASS FIREBASE AUTH - Just login directly for testing
   try {
-    setupRecaptcha();
-    confirmationResult = await signInWithPhoneNumber(auth, fullPhone, window.recaptchaVerifier);
-    document.getElementById("otp-phone-label").textContent = `Sent to ${fullPhone}`;
-    showStep(2);
-    startCountdown();
+    const uid = "user_" + mobile;
+    const userRef = doc(db, "chat_users", mobile);
+    const snap = await getDoc(userRef);
+
+    if (!snap.exists()) {
+      await setDoc(userRef, {
+        uid: uid,
+        name: name,
+        mobile: mobile,
+        avatarUrl: "",
+        lastActive: Date.now(),
+        typingTo: null,
+        statusVisible: true,
+        about: "Hey there! I am using RasGram.",
+        fcmToken: ""
+      });
+    } else {
+      await updateDoc(userRef, { lastActive: Date.now(), uid: uid });
+    }
+
+    const savedName = snap.exists() ? (snap.data().name || name) : name;
+
+    // Save locally
+    localStorage.setItem("rg_mobile", mobile);
+    localStorage.setItem("rg_name", savedName);
+    localStorage.setItem("rg_avatar", snap.exists() ? (snap.data().avatarUrl || "") : "");
+
+    window.location.href = "app.html";
   } catch (e) {
     console.error(e);
-    showError("Failed to send OTP: " + e.message);
-    // Reset recaptcha on error
-    if (window.recaptchaVerifier) {
-      window.recaptchaVerifier.clear();
-      window.recaptchaVerifier = null;
-    }
+    showError("Login failed: " + e.message);
   } finally {
     setLoading("send-otp-text", "send-otp-loader", false);
   }
