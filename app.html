@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RasGram Web</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- Main App Layout -->
+<div class="app-layout" id="app-layout">
+
+  <!-- LEFT PANEL: Contacts -->
+  <div class="left-panel" id="left-panel">
+
+    <!-- Header -->
+    <div class="app-header">
+      <div id="my-avatar" class="avatar" style="width:36px;height:36px;font-size:13px;cursor:pointer;" onclick="showProfileMenu()"></div>
+      <span class="logo-text"><span style="color:#E9EDEF">Ras</span><span style="color:#00A884">Gram</span></span>
+      <div class="spacer"></div>
+      <button class="icon-btn" onclick="toggleSearch()" title="Search">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+      </button>
+      <button class="icon-btn" onclick="logout()" title="Logout">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+      </button>
+    </div>
+
+    <!-- Search bar (hidden by default) -->
+    <div class="search-bar" id="search-bar" style="display:none">
+      <div class="search-input-wrap">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="#8696A0"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+        <input type="text" placeholder="Search contacts..." id="search-input" oninput="filterContacts(this.value)" />
+        <button class="icon-btn" onclick="toggleSearch()" style="width:24px;height:24px">✕</button>
+      </div>
+    </div>
+
+    <!-- Contact List -->
+    <div class="contact-list" id="contact-list">
+      <div style="text-align:center;padding:40px;color:var(--muted)">
+        <div class="loader" style="margin:0 auto 12px;border-color:rgba(255,255,255,0.2);border-top-color:var(--green)"></div>
+        Loading contacts...
+      </div>
+    </div>
+
+  </div>
+
+  <!-- RIGHT PANEL: Chat -->
+  <div class="right-panel" id="right-panel">
+
+    <!-- Empty state -->
+    <div class="empty-state" id="empty-state">
+      <div class="empty-icon">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="#8696A0"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+      </div>
+      <h3 style="color:var(--text-sec);font-weight:500">RasGram Web</h3>
+      <p style="font-size:14px;max-width:300px;text-align:center;line-height:1.6">
+        Select a contact to start chatting.<br/>Your messages are end-to-end encrypted.
+      </p>
+    </div>
+
+    <!-- Chat area (hidden until contact selected) -->
+    <div class="chat-area" id="chat-area" style="display:none">
+
+      <!-- Chat header -->
+      <div class="chat-header">
+        <button class="icon-btn" id="back-btn" onclick="closeChat()" style="display:none">←</button>
+        <div class="avatar" id="chat-avatar" style="width:40px;height:40px;font-size:15px"></div>
+        <div class="chat-header-info">
+          <div class="chat-header-name" id="chat-name"></div>
+          <div class="chat-header-status" id="chat-status">last seen recently</div>
+        </div>
+        <div class="chat-actions">
+          <button class="icon-btn" onclick="startCall('audio')" title="Voice Call">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+          </button>
+          <button class="icon-btn" onclick="startCall('video')" title="Video Call">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Messages -->
+      <div class="messages-area" id="messages-area"></div>
+
+      <!-- Typing indicator (hidden) -->
+      <div id="typing-row" style="padding:0 16px 8px;display:none">
+        <div class="typing-indicator">
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+        </div>
+      </div>
+
+      <!-- Input area -->
+      <div class="input-area">
+        <button class="icon-btn" onclick="triggerFileUpload()" title="Attach">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 6v11.5c0 2.21-1.79 4-4 4s-4-1.79-4-4V5c0-1.38 1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5v10.5c0 .55-.45 1-1 1s-1-.45-1-1V6H10v9.5c0 1.38 1.12 2.5 2.5 2.5s2.5-1.12 2.5-2.5V5c0-2.21-1.79-4-4-4S7 2.79 7 5v12.5c0 3.04 2.46 5.5 5.5 5.5s5.5-2.46 5.5-5.5V6h-1.5z"/></svg>
+        </button>
+        <input type="file" id="file-input" style="display:none" accept="image/*,video/*,audio/*,.pdf,.doc,.docx" onchange="handleFileUpload(this)" />
+        <div class="msg-input-wrap">
+          <textarea class="msg-input" id="msg-input" placeholder="Type a message" rows="1"
+            onkeydown="handleInputKey(event)"
+            oninput="autoResize(this);handleTyping()"></textarea>
+        </div>
+        <button class="send-btn" onclick="sendMessage()" title="Send">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="black"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- CALL OVERLAY -->
+<div class="call-overlay" id="call-overlay" style="display:none">
+  <div class="call-avatar" id="call-avatar-overlay"></div>
+  <div class="call-name" id="call-name-overlay"></div>
+  <div class="call-status" id="call-status-overlay">Calling...</div>
+  <div id="video-container" style="display:none;position:fixed;inset:0;background:#000;z-index:1001">
+    <video id="remoteVideo" autoplay playsinline style="width:100%;height:100%;object-fit:cover"></video>
+    <video id="localVideo" autoplay playsinline muted style="position:absolute;top:20px;right:20px;width:120px;height:180px;border-radius:12px;object-fit:cover;border:2px solid #2A3942"></video>
+  </div>
+  <div class="call-actions">
+    <button class="call-btn mute" id="mute-btn" onclick="toggleMute()">
+      <div class="btn-circle">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg>
+      </div>
+      <span id="mute-label">Mute</span>
+    </button>
+    <button class="call-btn end" onclick="endCall()">
+      <div class="btn-circle">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08c-.18-.17-.29-.42-.29-.7 0-.28.11-.53.29-.71C3.34 8.78 7.46 7 12 7s8.66 1.78 11.71 4.67c.18.18.29.43.29.71 0 .28-.11.53-.29.71l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.1-.7-.28-.79-.74-1.69-1.36-2.67-1.85-.33-.16-.56-.5-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z"/></svg>
+      </div>
+      <span>End</span>
+    </button>
+    <button class="call-btn speaker" id="speaker-btn" onclick="toggleSpeaker()">
+      <div class="btn-circle">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </div>
+      <span id="speaker-label">Speaker</span>
+    </button>
+  </div>
+</div>
+
+<script type="module" src="chat.js"></script>
+</body>
+</html>
