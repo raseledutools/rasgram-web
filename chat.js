@@ -33,10 +33,12 @@ const CLOUDINARY_PRESET = "ml_default";
 if (!myMobile) { window.location.href = "index.html"; }
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
-onAuthStateChanged(auth, (user) => {
-  if (!user) { window.location.href = "index.html"; return; }
-  initApp();
-});
+// BYPASS FIREBASE AUTH GUARD FOR TESTING
+// onAuthStateChanged(auth, (user) => {
+//   if (!user) { window.location.href = "index.html"; return; }
+//   initApp();
+// });
+if (!myMobile) { window.location.href = "index.html"; } else { initApp(); }
 
 function initApp() {
   renderMyAvatar();
